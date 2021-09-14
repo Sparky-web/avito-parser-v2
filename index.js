@@ -10,7 +10,7 @@ dotenv.config()
 await strapi({dir: "./dashboard"}).start()
 state.avito = await avito.getState()
 
-setInterval(async () => {
+const start = async () => {
     try {
         const links = await _strapi.get("links", {isEnabled: true})
         for (let link of links) {
@@ -21,7 +21,11 @@ setInterval(async () => {
     } catch (e) {
         console.error(e.message || e)
     }
-}, 1000 * 60 * 60 * 30)
+}
+
+await start()
+
+setInterval(start, 1000 * 60 * 30)
 
 
 
