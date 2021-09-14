@@ -7,13 +7,12 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-await strapi({})
+await strapi({dir: "./dashboard"}).start()
 state.avito = await avito.getState()
-
-const links = await _strapi.get("links", {isEnabled: true})
 
 setInterval(async () => {
     try {
+        const links = await _strapi.get("links", {isEnabled: true})
         for (let link of links) {
             const data = await avito.getItemsFromSearch(link)
             console.log(data.map(e => e.title))
