@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "items",
+  "info": {
+    "name": "items",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text"
+    },
+    "price": {
+      "type": "integer"
+    },
+    "photoUrls": {
+      "type": "text"
+    },
+    "datePublished": {
+      "type": "datetime"
+    },
+    "dateSold": {
+      "type": "datetime"
+    },
+    "isSold": {
+      "type": "boolean"
+    },
+    "address": {
+      "type": "text"
+    },
+    "link": {
+      "model": "links"
+    },
+    "uId": {
+      "type": "integer",
+      "unique": true
+    },
+    "url": {
+      "type": "string"
+    }
+  }
+}

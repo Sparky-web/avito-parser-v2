@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "links",
+  "info": {
+    "name": "links",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "url": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "frequency": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "titleExclude": {
+      "type": "string"
+    },
+    "descriptionExclude": {
+      "type": "string"
+    },
+    "isFirstParse": {
+      "type": "boolean"
+    },
+    "isEnabled": {
+      "type": "boolean"
+    },
+    "shouldAddToDb": {
+      "type": "boolean"
+    },
+    "lastParse": {
+      "type": "component",
+      "repeatable": true,
+      "component": "links.last-parse"
+    }
+  }
+}

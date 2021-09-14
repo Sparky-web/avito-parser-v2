@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "configs",
+  "info": {
+    "name": "config",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "cookie": {
+      "type": "text"
+    },
+    "myId": {
+      "type": "integer"
+    },
+    "checkFavouritesFrequency": {
+      "type": "string"
+    }
+  }
+}
