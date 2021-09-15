@@ -101,21 +101,21 @@ const getItemsFromSearch = async (link) => {
     }
     if (link.isFirstParse) link.isFirstParse = false
 
-    if ((new Date() - new Date(_.last(link.lastParse).time)) > 1000 * 60 * 60 * 5)
-        link.lastParse = link.lastParse.push({
+    const last = link.lastParse[link.lastParse.length - 1]
+    if (last.time && (new Date() - new Date(_.last(link.lastParse).time)) > 1000 * 60 * 60 * 5)
+        link.lastParse.push({
             amountParsed: allItems.length,
             amountAdded,
             amount: await strapi.count("items", {link: link.id}),
             time: new Date()
         })
     else link.lastParse[link.lastParse.length - 1] = {
-        ..._.last(link.lastParse),
+        ...last,
         amountParsed: allItems.length,
-        amountAdded: _.last(link.lastParse).amountAdded,
+        amountAdded: _.last(link.lastParse).amountAdded + amountAdded,
         amount: await strapi.count("items", {link: link.id}),
     }
 
-    console.log(link)
 
     await strapi.update("links", link)
     return allItems

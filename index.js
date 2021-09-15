@@ -7,7 +7,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-await strapi({dir: "./dashboard"}).start()
+// await strapi({dir: "./dashboard"}).start()
 state.avito = await avito.getState()
 
 const start = async () => {
