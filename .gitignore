@@ -1,2 +1,4 @@
 /node_modules/
 /data-panel
+/stats/node_modules
+.env

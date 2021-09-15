@@ -1,7 +1,6 @@
 import axios from "axios"
 import url from "./url.js"
 import _ from "lodash"
-import state from "./state.js";
 import strapi from "./strapi.js";
 import randomUseragent from "random-useragent"
 import axiosRetry from "./axiosRetry.js";
@@ -34,7 +33,7 @@ const getItem = async (id, options = {raw: false}) => {
     const {data} = await axiosRetry.axios
         .get(`https://m.avito.ru/api/17/items/${id}?key=af0deccbgcgidddjgnvljitntccdduijhdinfgjgfjir&action=view`)
         .catch(err => {
-            if(err.response.status === 404) return {
+            if (err.response.status === 404) return {
                 data: {
                     status: "closed"
                 }
@@ -97,17 +96,23 @@ const getItemsFromSearch = async (link) => {
     })
 
     let amountAdded
-    if(link.shouldAddToDb) {
+    if (link.shouldAddToDb) {
         amountAdded = (await writeNewItems(allItems, link))?.length
     }
-    if(link.isFirstParse) link.isFirstParse = false
+    if (link.isFirstParse) link.isFirstParse = false
 
-    link.lastParse.push({
+    if ((new Date() - new Date(_.last(link.lastParse).time)) > 1000 * 60 * 60 * 5)
+        link.lastParse = link.lastParse.push({
+            amountParsed: allItems.length,
+            amountAdded,
+            amount: await strapi.count("items", {link: link.id}),
+            time: new Date()
+        })
+    else link.lastParse[link.lastParse.length - 1] = {
         amountParsed: allItems.length,
-        amountAdded,
+        amountAdded: _.last(link.lastParse).amountAdded,
         amount: await strapi.count("items", {link: link.id}),
-        time: new Date()
-    })
+    }
 
     await strapi.update("links", link)
     return allItems
@@ -131,7 +136,7 @@ const writeNewItems = async (items, link) => {
         link: link.id
     }))
 
-    for(let item of newItems) {
+    for (let item of newItems) {
         await strapi.create("items", item)
     }
 
@@ -158,10 +163,10 @@ const serializeItem = item => ({
 const updateSold = async () => {
     const items = await strapi.get("items", {isSold: false})
     const chunks = _.chunk(items, 20)
-    for(let chunk of chunks) {
+    for (let chunk of chunks) {
         await Promise.all(chunk.map(async item => {
             const newItem = await getItem(item.uId)
-            if(newItem.isSold) {
+            if (newItem.isSold) {
                 console.log(`SOLD ITEM! ${item.url}`)
                 await strapi.update("items", {
                     id: item.id,
