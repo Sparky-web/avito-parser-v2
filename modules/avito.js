@@ -102,7 +102,7 @@ const getItemsFromSearch = async (link) => {
     if (link.isFirstParse) link.isFirstParse = false
 
     const last = link.lastParse[link.lastParse.length - 1]
-    if (last.time && (new Date() - new Date(_.last(link.lastParse).time)) > 1000 * 60 * 60 * 5)
+    if (!last || (new Date() - new Date(_.last(link.lastParse).time)) > 1000 * 60 * 60 * 5)
         link.lastParse.push({
             amountParsed: allItems.length,
             amountAdded,
