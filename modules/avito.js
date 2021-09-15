@@ -109,9 +109,11 @@ const getItemsFromSearch = async (link) => {
             time: new Date()
         })
     else link.lastParse[link.lastParse.length - 1] = {
+        ..._.last(link.lastParse),
         amountParsed: allItems.length,
         amountAdded: _.last(link.lastParse).amountAdded,
         amount: await strapi.count("items", {link: link.id}),
+
     }
 
     await strapi.update("links", link)
