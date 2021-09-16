@@ -26,6 +26,7 @@
     "strapi-plugin-i18n": "3.6.3",
     "strapi-plugin-upload": "3.6.3",
     "strapi-plugin-users-permissions": "3.6.3",
-    "strapi-utils": "3.6.3"
+    "strapi-utils": "3.6.3",
+    "telegraf": "^4.4.2"
   }
 }

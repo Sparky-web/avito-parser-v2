@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/telegram-users",
+      "handler": "telegram-users.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/telegram-users/count",
+      "handler": "telegram-users.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/telegram-users/:id",
+      "handler": "telegram-users.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/telegram-users",
+      "handler": "telegram-users.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/telegram-users/:id",
+      "handler": "telegram-users.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/telegram-users/:id",
+      "handler": "telegram-users.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

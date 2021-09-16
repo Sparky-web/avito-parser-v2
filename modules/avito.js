@@ -4,6 +4,7 @@ import _ from "lodash"
 import strapi from "./strapi.js";
 import randomUseragent from "random-useragent"
 import axiosRetry from "./axiosRetry.js";
+import telegram from "./telegram.js";
 
 const generateCookie = async () => {
     const f = `5.c3837d09028233105a26f3839ed5da0718acb09177f426d418acb09177f426d418acb09177f426d418acb09177f426d4eb41a574e646f5d6eb41a574e646f5d6eb41a574e646f5d633cf7be726e5a5d933cf7be726e5a5d9724cdfdb5d74c73c0df103df0c26013a8b1472fe2f9ba6b90df103df0c26013a0df103df0c26013adc5322845a0cba1a3dad307ec010882759d93c1352fb82c6742d70caf8d4c5a878ba5f931b08c66ada461aa06e9af9d53c02ea8f64acc0bd8b1472fe2f9ba6b92da10fb74cac1eabf722fe85c94f7d0c268a7bf63aa148d2f722fe85c94f7d0c2da10fb74cac1eab2da10fb74cac1eabf0c77052689da50d268a7bf63aa148d2f722fe85c94f7d0c7705f11cf96b30b242f72d0457dff95a129a7f9add5eb3c469b09b0547bae2c11b8894b7dccb529c1da9f488c469f0756f6246f7eaf3b77bd3f41bd13d9c4fbb2af9e5c04fd1603f6124759e2802d755ebde705e4a5178720df103df0c26013a0df103df0c26013aafbc9dcfc006bed954343acdca9a7c70974fbbae88acc1923de19da9ed218fe23de19da9ed218fe2d6fdecb021a45a311d31352e4819a10992bff18307225f49`
@@ -95,24 +96,25 @@ const getItemsFromSearch = async (link) => {
         return a && b && c && el.isUserActive
     })
 
-    let amountAdded
+    let added
     if (link.shouldAddToDb) {
-        amountAdded = (await writeNewItems(allItems, link))?.length
+        added = (await writeNewItems(allItems, link))
     }
+    if (link.shouldNotify) await sendNotifications(added, link)
     if (link.isFirstParse) link.isFirstParse = false
 
     const last = link.lastParse[link.lastParse.length - 1]
     if (!last || (new Date() - new Date(_.last(link.lastParse).time)) > 1000 * 60 * 60 * 5)
         link.lastParse.push({
             amountParsed: allItems.length,
-            amountAdded,
+            amountAdded: added.length,
             amount: await strapi.count("items", {link: link.id}),
             time: new Date().toISOString()
         })
     else link.lastParse[link.lastParse.length - 1] = {
         ...last,
         amountParsed: allItems.length,
-        amountAdded: _.last(link.lastParse).amountAdded + amountAdded,
+        amountAdded: _.last(link.lastParse).amountAdded + added.length,
         amount: await strapi.count("items", {link: link.id}),
     }
 
@@ -151,7 +153,7 @@ const serializeItem = item => ({
     price: +item.firebaseParams?.itemPrice,
     photoUrls: item.images?.map(el => {
         const urls = Object.values(el)
-        return urls[0]
+        return urls[urls.length - 1]
     }).join(","),
     datePublished: new Date(item.time * 1000),
     dateSold: null,
@@ -180,12 +182,60 @@ const updateSold = async () => {
     }
 }
 
+const getAveragePrice = async (link) => {
+    const notSold = await strapi.get("items", {
+        link: link.id,
+        isSold: false
+    })
+    const sold = await strapi.get("items", {
+        link: link.id,
+        isSold: true
+    })
+
+    return {
+        averagePrice: Math.round(notSold.map(e=>e.price).reduce((acc, val) => acc + val, 0) / notSold.length),
+        averageSoldPrice: Math.round(sold.map(e=>e.price).reduce((acc, val) => acc + val, 0) / sold.length)
+    }
+}
+
+const updateAveragePrices = async () => {
+    const links = await strapi.get("links")
+    for(let link of links) {
+        await strapi.update("links", {
+            ...link,
+            ...await getAveragePrice(link)
+        })
+    }
+}
+
+const sendNotifications = async (items, link) => {
+    const belowAverage = items.filter(item => item.price < link.averageSoldPrice)
+    for(let item of belowAverage) {
+        await sendItem(item, link)
+    }
+}
+
+const sendItem = async (item, link) => {
+    const text = `
+${item.title} - ${item.price} ₽
+Ниже среднеей цены на ${link.averageSoldPrice - item.price} ₽
+
+${item.description}
+${item.url}
+`
+    const photoUrl = item.photoUrls.split(",")[0]
+
+    await telegram.sendPhotoToAllUsers(photoUrl, text)
+}
+
 const avito = {
     getItem,
     getItemsFromSearch,
     generateCookie,
     getState,
-    updateSold
+    updateSold,
+    getAveragePrice,
+    updateAveragePrices
 }
 
 export default avito

@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "telegram_users",
+  "info": {
+    "name": "TelegramUsers"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "chatId": {
+      "type": "integer"
+    }
+  }
+}

@@ -43,6 +43,15 @@
       "type": "component",
       "repeatable": true,
       "component": "links.last-parse"
+    },
+    "averageSoldPrice": {
+      "type": "integer"
+    },
+    "averagePrice": {
+      "type": "integer"
+    },
+    "shouldNotify": {
+      "type": "boolean"
     }
   }
 }
