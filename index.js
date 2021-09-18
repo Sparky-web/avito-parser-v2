@@ -21,14 +21,17 @@ const start = async () => {
         }
 
         await update()
-
     } catch (e) {
         console.error(e.message || e)
     }
 }
 const update = async () => {
-    await avito.updateSold()
-    await avito.updateAveragePrices()
+    try {
+        await avito.updateSold()
+        await avito.updateAveragePrices()
+    } catch(e) {
+        console.error(e.message || e)
+    }
 }
 
 await start()
