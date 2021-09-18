@@ -24,6 +24,7 @@ function Item(props) {
     if (!data || !link) return <div>Loading...</div>
 
     const sold = data.filter(e => e.isSold)
+    const notSold = data.filter(e => !e.isSold)
 
     return (
         <div>
@@ -47,6 +48,11 @@ function Item(props) {
 
             <AvitoItems items={sold}/>
 
+            <br/>
+
+            <Title level={3}>Не проданные товары:</Title>
+
+            <AvitoItems items={notSold}/>
         </div>
 
     );

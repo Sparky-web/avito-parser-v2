@@ -5,6 +5,7 @@ import _strapi from "./modules/strapi.js"
 import telegram from "./modules/telegram.js";
 
 import dotenv from "dotenv"
+
 dotenv.config()
 
 await strapi({dir: "./dashboard"}).start()
@@ -16,18 +17,24 @@ const start = async () => {
         const links = await _strapi.get("links", {isEnabled: true})
         for (let link of links) {
             const data = await avito.getItemsFromSearch(link)
-            console.log(data.map(e => e.title))
+            console.log(data.length)
         }
-        await avito.updateSold()
-        await avito.updateAveragePrices()
+
+        await update()
+
     } catch (e) {
         console.error(e.message || e)
     }
 }
+const update = async () => {
+    await avito.updateSold()
+    await avito.updateAveragePrices()
+}
 
 await start()
+await update()
 
-setInterval(start, 1000 * 60 * 30)
+setInterval(update, 1000 * 60 * 10)
 
 
 
