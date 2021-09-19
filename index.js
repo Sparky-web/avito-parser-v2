@@ -37,7 +37,7 @@ const update = async () => {
 await start()
 await update()
 
-setInterval(update, 1000 * 60 * 30)
+setInterval(start, 1000 * 60 * 30)
 
 
 
