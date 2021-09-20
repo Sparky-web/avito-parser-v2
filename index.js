@@ -30,7 +30,7 @@ const update = async () => {
         await avito.updateSold()
         await avito.updateAveragePrices()
     } catch(e) {
-        console.error(e.message || e)
+        console.error(e.stack || e)
     }
 }
 
