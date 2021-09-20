@@ -89,7 +89,7 @@ const getItemsFromSearch = async (link) => {
     }
 
     allItems = allItems.filter(el => {
-        console.log(link)
+        console.log(el)
         let a = el.title.match(new RegExp(link.query, "ig"))
         let b = !el.title.match(new RegExp(link.titleExclude, "ig"))
         let c = !el.description.match(new RegExp(link.descriptionExclude, "ig"))
