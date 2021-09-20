@@ -41,6 +41,7 @@ const getItem = async (id, options = {raw: false}) => {
             }
             else throw err
         })
+
     return options.raw ? data : serializeItem(data)
 }
 
@@ -89,10 +90,9 @@ const getItemsFromSearch = async (link) => {
     }
 
     allItems = allItems.filter(el => {
-        if(!el.title) console.log(el)
-        let a = el.title?.match(new RegExp(link.query, "ig"))
-        let b = !el.title.match(new RegExp(link.titleExclude, "ig"))
-        let c = !el.description.match(new RegExp(link.descriptionExclude, "ig"))
+        let a = el.title?.match?.(new RegExp(link.query, "ig"))
+        let b = !el.title?.match?.(new RegExp(link.titleExclude, "ig"))
+        let c = !el.description?.match?.(new RegExp(link.descriptionExclude, "ig"))
 
         return a && b && c && el.isUserActive
     })
