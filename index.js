@@ -22,7 +22,7 @@ const start = async () => {
 
         await update()
     } catch (e) {
-        console.error(e.message || e)
+        console.error(e.stack || e)
     }
 }
 const update = async () => {
