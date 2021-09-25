@@ -20,7 +20,6 @@ const start = async () => {
             console.log(data.length)
         }
 
-        await update()
     } catch (e) {
         console.error(e.stack || e)
     }
@@ -38,6 +37,7 @@ await start()
 await update()
 
 setInterval(start, 1000 * 60 * 5)
+setInterval(update, 1000 * 60 * 30)
 
 
 
